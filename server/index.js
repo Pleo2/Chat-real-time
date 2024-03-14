@@ -8,8 +8,15 @@ const app = express()
 const server = createServer(app) // crear un servido
 const io = new Server(server)
 
-io.on('connection', () => {
-	console.log('a user has connect')
+io.on('connection', (socket) => {
+	console.log('an user has connect')
+	socket.on('disconnect', () => {
+		console.log('an user has disconnect')
+	})
+
+	socket.on('chat message', (msg) => {
+		io.emit('chat message', msg)
+	})
 })
 
 app.use(logger('dev'))
@@ -19,17 +26,19 @@ app.disable('x-powered-by') // deshabilitar el header X-Powered-By: Express
 const PORT = process.env.PORT ?? 3000
 
 app.get('/', (req, res) => {
-	// res.sendFile(process.cwd() + 'client/index.html')	
-	
 	res.sendFile(process.cwd() + '/client/index.html')
 })
 
-app.get('/output.css', (req,res) => {
+app.get('/output.css', (req, res) => {
 	res.sendFile(process.cwd() + '/client/output.css')
 })
 
-app.get('/index.js', (req,res) => {
+app.get('/index.js', (req, res) => {
 	res.sendFile(process.cwd() + '/client/index.js')
+})
+
+app.get('/public/image.webp', (req, res) => {
+	res.sendFile(process.cwd() + '/client/public/image.webp')
 })
 
 server.listen(PORT, () => {
