@@ -6,7 +6,11 @@ import { createServer } from 'node:http'
 
 const app = express()
 const server = createServer(app) // crear un servido
-const io = new Server(server)
+const io = new Server(server, {
+	connectionStateRecovery: {
+		
+	}
+})
 
 io.on('connection', (socket) => {
 	console.log('an user has connect')
